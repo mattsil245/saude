@@ -5,6 +5,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 
+
 export default function Frutas() {
   
   const [query, setQuery] = useState('');
