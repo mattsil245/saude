@@ -13,12 +13,12 @@ import {
   Pressable,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import axios from 'axios';
-import styles from './styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as FileSystem from 'expo-file-system';
+import styles from './styles';
 
-export default function Cadastro() {
+export default function Cadastro({ navigation }) {
   const insets = useSafeAreaInsets();
 
   const [nome, setNome] = useState('');
@@ -44,28 +44,22 @@ export default function Cadastro() {
   }, []);
 
   async function normalizeUri(uri) {
-  if (Platform.OS === 'android' && uri.startsWith('content://')) {
-    try {
-      // Caminho temporário para salvar a cópia do arquivo
-      const fileName = uri.split('/').pop();
-      const destPath = `${FileSystem.cacheDirectory}${fileName}`;
-
-      // Copia o arquivo content:// para file://
-      await FileSystem.copyAsync({
-        from: uri,
-        to: destPath,
-      });
-
-      return destPath; // agora com file://
-    } catch (error) {
-      console.log('Erro ao converter URI:', error);
-      return uri; // fallback para URI original
+    if (Platform.OS === 'android' && uri.startsWith('content://')) {
+      try {
+        const fileName = uri.split('/').pop();
+        const destPath = `${FileSystem.cacheDirectory}${fileName}`;
+        await FileSystem.copyAsync({
+          from: uri,
+          to: destPath,
+        });
+        return destPath;
+      } catch (error) {
+        console.log('Erro ao converter URI:', error);
+        return uri;
+      }
     }
+    return uri;
   }
-
-  // Para iOS ou se já for file://, retorna uri direto
-  return uri;
-}
 
   async function pickImage() {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -86,83 +80,82 @@ export default function Cadastro() {
     }
   }
 
-  function base64ToBlob(base64, mime = '') {
-    const byteCharacters = atob(base64);
-    const byteArrays = [];
+  const enviarDados = async () => {
+    if (!image) {
+      alert('Selecione uma imagem!');
+      return;
+    }
 
-    for (let i = 0; i < byteCharacters.length; i += 512) {
-      const slice = byteCharacters.slice(i, i + 512);
-      const byteNumbers = new Array(slice.length);
-      for (let j = 0; j < slice.length; j++) {
-        byteNumbers[j] = slice.charCodeAt(j);
+    setUploading(true);
+    const url = 'http://10.67.4.217:8000/api/usuarios/';
+
+    try {
+      let uriFinal = image.uri;
+      if (Platform.OS !== 'web') {
+        uriFinal = await normalizeUri(image.uri);
       }
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
+
+      let file;
+      if (Platform.OS === 'web') {
+        const byteCharacters = atob(image.base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: image.type });
+        file = new File([blob], image.name, { type: image.type });
+      } else {
+        file = {
+          uri: uriFinal,
+          name: image.name,
+          type: image.type,
+        };
+      }
+
+      const formData = new FormData();
+      formData.append('nome', nome);
+      formData.append('email', email);
+      formData.append('senha', senha);
+      formData.append('dataNasc', dataNasc);
+      formData.append('genero', genero);
+      formData.append('altura', altura);
+      formData.append('peso', peso);
+      formData.append('foto', file);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error('Erro ao enviar dados: ' + errorText);
+      }
+
+      const data = await response.json();
+
+     if (data.status === 'success' && data.usuario) {
+  const { created_at, updated_at, ...usuarioLimpo } = data.usuario;
+
+  await AsyncStorage.setItem('usuario', JSON.stringify(usuarioLimpo));
+
+  // Atualiza o estado global do usuário para disparar troca de rotas
+  props.setUsuario(usuarioLimpo);
+
+  alert('Cadastro realizado com sucesso!');
+}
+ else {
+  alert('Erro no cadastro, tente novamente.');
+}
+
+    } catch (error) {
+      console.error('Erro no fetch:', error);
+      alert('Erro ao enviar os dados.');
+    } finally {
+      setUploading(false);
     }
-
-    return new Blob(byteArrays, { type: mime });
-  }
-
-const enviarDados = async () => {
-  if (!image) {
-    alert('Selecione uma imagem!');
-    return;
-  }
-
-  setUploading(true);
-  const url = 'http://10.67.4.72:8082/api/usuarios/';
-
-  try {
-    let uriFinal = image.uri;
-    if (Platform.OS !== 'web') {
-      uriFinal = await normalizeUri(image.uri);
-    }
-
-    let file;
-    if (Platform.OS === 'web') {
-      // converte base64 para Blob
-      const blob = base64ToBlob(image.base64, image.type);
-      file = new File([blob], image.name, { type: image.type });
-    } else {
-      // no mobile, use o objeto com uri normalizada
-      file = {
-        uri: uriFinal,
-        name: image.name,
-        type: image.type,
-      };
-    }
-
-    const formData = new FormData();
-    formData.append('nome', nome);
-    formData.append('email', email);
-    formData.append('senha', senha);
-    formData.append('dataNasc', dataNasc);
-    formData.append('genero', genero);
-    formData.append('altura', altura);
-    formData.append('peso', peso);
-    formData.append('foto', file);
-
-    const response = await fetch(url, {
-      method: 'POST',
-      // NÃO setar Content-Type aqui, o fetch cuida disso automaticamente
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error('Erro ao enviar dados: ' + errorText);
-    }
-
-    alert('Cadastro realizado com sucesso!');
-  } catch (error) {
-    console.error('Erro no fetch:', error);
-    alert('Erro ao enviar os dados.');
-  } finally {
-    setUploading(false);
-  }
-};
-
-
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -182,7 +175,12 @@ const enviarDados = async () => {
         </Pressable>
 
         <View style={styles.formulario}>
-          <TextInput style={styles.input} placeholder="Nome" value={nome} onChangeText={setNome} />
+          <TextInput
+            style={styles.input}
+            placeholder="Nome"
+            value={nome}
+            onChangeText={setNome}
+          />
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -238,8 +236,8 @@ const enviarDados = async () => {
               disabled={uploading}
             />
             <Button
-              title="Cancelar"
-              onPress={() => console.log('Cancelado')}
+              title="Voltar"
+              onPress={() => navigation.goBack()}
               color="#646464"
               disabled={uploading}
             />
