@@ -33,8 +33,11 @@ export default StyleSheet.create({
         position: 'static',
         width: '100%',
         height: 40,
-        justifyContent:'center',
+        justifyContent:'space-between',
+        alignItems: 'center',
         marginTop: 15,
+        flexDirection: 'row',
+        display: 'flex',
     },
     Titulo: {
         fontWeight: 'bold',
@@ -52,6 +55,15 @@ export default StyleSheet.create({
         flex: 1,
         paddingBottom: 20, // opcional, para dar um espaço ao final
         
-      }
+      },
+    perfil: {
+        borderColor: '#9c9c9c',
+        borderWidth: 2,
+        borderRadius: 80,
+        width: 50,
+        height: 50,
+        marginEnd: 20,
+  },
+
       
 })

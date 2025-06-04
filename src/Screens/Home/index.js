@@ -12,9 +12,14 @@ export default function Home() {
 {/*         <Button title='Imc'onPress={ () => navigation.navigate('Imc')}/>
         <Button title='Agua'onPress={ () => navigation.navigate('Agua')}/>
         <Button title='Diabetes'onPress={ () => navigation.navigate('Diabetes')}/> */}
-        <Button title='Cadastro'onPress={ () => navigation.navigate('Cadastro')}/>
         <View style={styles.nav}>
           <Text style= {styles.Titulo}> Cuide-se Bem! </Text>
+        <Pressable title='Cadastro'onPress={ () => navigation.navigate('Cadastro')}>
+           <Image
+                style={styles.perfil}
+                source={require('../../../assets/img/fotoPerfil.jpeg')}
+              />
+            </Pressable>
         </View>
         <ScrollView style={styles.scrollView}>
 
