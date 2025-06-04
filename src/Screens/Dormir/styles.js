@@ -40,7 +40,7 @@ export default StyleSheet.create({
       },
       
       dicaCard: {
-        backgroundColor: 'rgba(255, 255, 255, 0.35)', // menos transparente
+        backgroundColor: 'rgba(255, 255, 255, 0.15)', // branco transparente
         borderRadius: 12,
         padding: 15,
         marginBottom: 15,
@@ -51,11 +51,10 @@ export default StyleSheet.create({
       },
       
       dicaTexto: {
-        fontSize: 28,             // maior texto
-        color: '#e0e6f3',
-        lineHeight: 28,
+        fontSize: 16,
+        color: '#e0e6f3', // branco suave
+        lineHeight: 24,
       },
-      
       background: {
         flex: 1,
         justifyContent: 'center',
@@ -95,7 +94,7 @@ export default StyleSheet.create({
       },
       
       dicaCard: {
-        backgroundColor: 'rgba(255, 255, 255, 0.15)', // branco transparente
+        backgroundColor: 'rgba(255, 255, 255, 0.4)',
         borderRadius: 12,
         padding: 15,
         marginBottom: 15,
@@ -106,10 +105,8 @@ export default StyleSheet.create({
       },
       
       dicaTexto: {
-        fontSize: 16,
-        color: '#e0e6f3', // branco suave
-        lineHeight: 24,
-      },
-            
-      
+        fontSize: 22,
+        color: '#e0e6f3',
+        lineHeight: 28,
+      }      
 })
