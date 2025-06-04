@@ -1,7 +1,7 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Home from './../Screens/Home';
 import Imc from './../Screens/Imc';
@@ -14,35 +14,64 @@ import Meditacao from '../Screens/Meditacao';
 import Pressao from '../Screens/Pressao';
 import Remedio from '../Screens/Remedio';
 import Vacinas from '../Screens/Vacinas';
+
 import Cadastro from '../Screens/Cadastro';
-const Stack = createNativeStackNavigator ();
+import Login from '../Screens/Login';   // Precisa criar!
+import Start from '../Screens/Start';   // Precisa criar!
+
+const Stack = createNativeStackNavigator();
 
 export default function Routes() {
+  const [usuario, setUsuario] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    verificarUsuario();
+  }, []);
+
+  const verificarUsuario = async () => {
+    try {
+      const user = await AsyncStorage.getItem('usuario');
+      setUsuario(user ? JSON.parse(user) : null);
+    } catch (e) {
+      console.log('Erro ao verificar usuário:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return null;  // ou um <ActivityIndicator /> como "Carregando..."
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={Home}/>
-        <Stack.Screen name="Imc" component={Imc}/>
-        <Stack.Screen name="Agua" component={Agua}/>
-        <Stack.Screen name="Diabetes" component={Diabetes}/>
-        <Stack.Screen name="Dormir" component={Dormir}/>
-        <Stack.Screen name="Frases" component={Frases}/>
-        <Stack.Screen name="Frutas" component={Frutas}/>
-        <Stack.Screen name="Meditacao" component={Meditacao}/>
-        <Stack.Screen name="Pressao" component={Pressao}/>
-        <Stack.Screen name="Remedio" component={Remedio}/>
-        <Stack.Screen name="Vacinas" component={Vacinas}/>
-        <Stack.Screen name="Cadastro" component={Cadastro}/>
+        {usuario ? (
+          <>
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Imc" component={Imc} />
+            <Stack.Screen name="Agua" component={Agua} />
+            <Stack.Screen name="Diabetes" component={Diabetes} />
+            <Stack.Screen name="Dormir" component={Dormir} />
+            <Stack.Screen name="Frases" component={Frases} />
+            <Stack.Screen name="Frutas" component={Frutas} />
+            <Stack.Screen name="Meditacao" component={Meditacao} />
+            <Stack.Screen name="Pressao" component={Pressao} />
+            <Stack.Screen name="Remedio" component={Remedio} />
+            <Stack.Screen name="Vacinas" component={Vacinas} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Start" component={Start} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Cadastro">
+              {props => <Cadastro {...props} setUsuario={setUsuario} />}
+            </Stack.Screen>
+
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
