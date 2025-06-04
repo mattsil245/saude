@@ -105,7 +105,7 @@ export default function AudioListPlayer() {
           </TouchableOpacity>
         </View>
       )}
-      <Button title="Tocar" onPress={() => tocarAudio(item)} />
+      <Button style={{backgroundColor: '#ff00d5' }}title="Tocar" onPress={() => tocarAudio(item)} />
       {currentAudioId === item.id && (
         <View style={styles.sliderContainer}>
           <Slider
@@ -129,15 +129,15 @@ export default function AudioListPlayer() {
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}> {/* Fundo branco para a tela toda */}
       {/* Cabeçalho fixo com botão de voltar e título da página */}
       <View style={styles.nav}>
         <Pressable onPress={() => navigation.goBack()} style={styles.home}>
-          <Feather name="arrow-left-circle" size={30} color="#fff" />
+          <Feather name="arrow-left-circle" size={30} color="#fa08d1" />
         </Pressable>
-        <Text style={styles.Titulo}>Frases Motivacionais</Text>
+        <Text style={styles.Titulo}>Meditação</Text>
       </View>
-  
+
       <FlatList
         data={audios}
         renderItem={renderItem}
@@ -146,20 +146,15 @@ export default function AudioListPlayer() {
       />
     </View>
   );
-  
 }
 
 const styles = StyleSheet.create({
   nav: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1EB1FC',
-    paddingTop: 40,
-    paddingBottom: 16,
-    paddingHorizontal: 16,
-    borderBottomLeftRadius: 16,
-    borderBottomRightRadius: 16,
     elevation: 3,
+    padding: 15,
+    
   },
   home: {
     marginRight: 12,
@@ -168,19 +163,21 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   Titulo: {
-    color: '#fff',
+    color:'#fa08d1',
     fontSize: 20,
     fontWeight: 'bold',
   },
   container: {
+    flex: 1,
     padding: 16,
     paddingBottom: 40,
+    backgroundColor: '#ffcaf6', // cor de fundo da área do conteúdo
   },
   audioCard: {
     marginBottom: 24,
     padding: 16,
     borderRadius: 16,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -209,6 +206,7 @@ const styles = StyleSheet.create({
   },
   sliderContainer: {
     marginTop: 8,
+    backgroundColor: '#ff00d5',
   },
   time: {
     fontSize: 14,
@@ -216,5 +214,4 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginTop: 4,
   },
-  
 });
