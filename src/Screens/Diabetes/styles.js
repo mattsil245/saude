@@ -7,4 +7,12 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+
+    nav: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: 'black'
+    },
 })

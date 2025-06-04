@@ -3,6 +3,7 @@ import { View, Image, FlatList, Alert, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as Notifications from "expo-notifications";
 import { Text, Button, TextInput } from "react-native-paper";
+import styles from './styles';
 
 export default function MedicationReminder() {
   const [image, setImage] = useState(null);
@@ -120,46 +121,3 @@ export default function MedicationReminder() {
   );
 }
 
-const styles = StyleSheet.create({
-  app: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f5f5f5",
-    marginTop: 80,
-  },
-
-  title: {
-    fontWeight: "800",
-    fontSize: 25,
-    margin: 10,
-  },
-
-  btn: {
-    width: 250,
-    margin: 10,
-  },
-
-  img: {
-    width: 200,
-    height: 200,
-    borderRadius: 5,
-  },
-
-  input: {
-    borderBottomWidth: 1,
-    width: 250,
-    textAlign: "center",
-    margin: 10,
-  },
-
-  history: {
-    marginTop: 10,
-    fontSize: 25,
-  },
-
-  textItem: {
-    margin: 2.5,
-    fontSize: 18,
-  },
-});
