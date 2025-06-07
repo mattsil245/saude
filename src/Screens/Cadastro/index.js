@@ -18,7 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as FileSystem from 'expo-file-system';
 import styles from './styles';
 
-export default function Cadastro({ navigation }) {
+export default function Cadastro({ navigation, setUsuario }) {
   const insets = useSafeAreaInsets();
 
   const [nome, setNome] = useState('');
@@ -87,7 +87,7 @@ export default function Cadastro({ navigation }) {
     }
 
     setUploading(true);
-    const url = 'http://10.67.4.217:8000/api/usuarios/';
+    const url = 'http://127.0.0.1:8000/api/usuarios/';
 
     try {
       let uriFinal = image.uri;
@@ -140,13 +140,14 @@ export default function Cadastro({ navigation }) {
 
   await AsyncStorage.setItem('usuario', JSON.stringify(usuarioLimpo));
 
-  // Atualiza o estado global do usuário para disparar troca de rotas
-  props.setUsuario(usuarioLimpo);
+  setUsuario(usuarioLimpo);
 
-  alert('Cadastro realizado com sucesso!');
+  alert('Sucesso', 'Cadastro realizado com sucesso!', [
+    { text: 'OK', onPress: () => navigation.navigate('Home') }
+  ]);
 }
  else {
-  alert('Erro no cadastro, tente novamente.');
+  alert('Erro', 'Erro no cadastro, tente novamente.');
 }
 
     } catch (error) {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, ActivityIndicator } from 'react-native';
 
 import Home from './../Screens/Home';
 import Imc from './../Screens/Imc';
@@ -16,8 +17,8 @@ import Remedio from '../Screens/Remedio';
 import Vacinas from '../Screens/Vacinas';
 
 import Cadastro from '../Screens/Cadastro';
-import Login from '../Screens/Login';   // Precisa criar!
-import Start from '../Screens/Start';   // Precisa criar!
+import Login from '../Screens/Login';   
+import Start from '../Screens/Start';  
 
 const Stack = createNativeStackNavigator();
 
@@ -41,7 +42,11 @@ export default function Routes() {
   };
 
   if (loading) {
-    return null;  // ou um <ActivityIndicator /> como "Carregando..."
+    return (
+      <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
 
   return (
@@ -64,11 +69,12 @@ export default function Routes() {
         ) : (
           <>
             <Stack.Screen name="Start" component={Start} />
-            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Login">
+              {props => <Login {...props} setUsuario={setUsuario} />}
+            </Stack.Screen>
             <Stack.Screen name="Cadastro">
               {props => <Cadastro {...props} setUsuario={setUsuario} />}
             </Stack.Screen>
-
           </>
         )}
       </Stack.Navigator>

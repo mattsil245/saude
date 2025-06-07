@@ -205,8 +205,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   sliderContainer: {
-    marginTop: 8,
-    backgroundColor: '#ff00d5',
+    marginTop: 8
   },
   time: {
     fontSize: 14,

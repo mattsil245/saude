@@ -9,9 +9,7 @@ export default function Home() {
   return (
     <View style={styles.container}>
          
-{/*         <Button title='Imc'onPress={ () => navigation.navigate('Imc')}/>
-        <Button title='Agua'onPress={ () => navigation.navigate('Agua')}/>
-        <Button title='Diabetes'onPress={ () => navigation.navigate('Diabetes')}/> */}
+
         <View style={styles.nav}>
           <Text style= {styles.Titulo}> Cuide-se Bem! </Text>
         <Pressable title='Cadastro'onPress={ () => navigation.navigate('Cadastro')}>

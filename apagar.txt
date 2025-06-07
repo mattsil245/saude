@@ -1,0 +1,11 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const apagarTudo = async () => {
+  try {
+    await AsyncStorage.clear();
+    console.log('Todos os dados foram apagados!');
+  } catch (error) {
+    console.error('Erro ao apagar dados:', error);
+  }
+};
+apagarTudo();
