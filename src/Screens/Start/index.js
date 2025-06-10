@@ -7,17 +7,18 @@ export default function Start() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bem-vindo ao App de Saúde</Text>
+      <Text style={styles.title}>Bem-vindo(a) Para o Cuide-se Bem!</Text>
+      
 
       <Pressable 
-        style={[styles.button, { backgroundColor: '#32815A' }]} 
+        style={[styles.button, { backgroundColor: 'rgb(50, 117, 129)'}]} 
         onPress={() => navigation.navigate('Login')}
       >
         <Text style={styles.buttonText}>Entrar</Text>
       </Pressable>
 
       <Pressable 
-        style={[styles.button, { backgroundColor: '#4CAF50' }]} 
+        style={[styles.button, { backgroundColor: 'rgb(76, 175, 162)' }]} 
         onPress={() => navigation.navigate('Cadastro')}
       >
         <Text style={styles.buttonText}>Cadastrar</Text>
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#d9fff0',
     padding: 20
   },
   title: {
