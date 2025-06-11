@@ -9,43 +9,48 @@ import {
   Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 export default function Login({ navigation, setUsuario }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch('http://127.0.0.1:8000/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha }),
-      });
+const handleLogin = async () => {
+  setLoading(true);
+  try {
+    let baseUrl = 'http://127.0.0.1:8000'; // padrão para Web
 
-      if (!response.ok) {
-        throw new Error('Usuário ou senha incorretos');
-      }
-
-      const data = await response.json();
-
-      // Remove campos que não quer salvar
-      const { created_at, updated_at, ...usuarioLimpo } = data;
-
-      await AsyncStorage.setItem('usuario', JSON.stringify(usuarioLimpo));
-
-      // Atualiza o estado global para disparar a troca das rotas
-      setUsuario(usuarioLimpo);
-
-      // Não precisa mais resetar a navegação porque a troca do estado vai atualizar a stack automaticamente
-
-    } catch (error) {
-      Alert.alert('Erro', error.message);
-    } finally {
-      setLoading(false);
+    if (Platform.OS !== 'web') {
+      const ipSalvo = await AsyncStorage.getItem('apiIP');
+      if (!ipSalvo) throw new Error('Nenhum IP configurado. Vá em "⚙️ Configurar IP"');
+      baseUrl = `http://${ipSalvo}:8000`;
     }
-  };
+
+    const response = await fetch(`${baseUrl}/api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Usuário ou senha incorretos');
+    }
+
+    const data = await response.json();
+
+    const { created_at, updated_at, ...usuarioLimpo } = data;
+
+    await AsyncStorage.setItem('usuario', JSON.stringify(usuarioLimpo));
+    setUsuario(usuarioLimpo);
+
+  } catch (error) {
+    Alert.alert('Erro', error.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <View style={styles.container}>

@@ -19,6 +19,7 @@ import Vacinas from '../Screens/Vacinas';
 import Cadastro from '../Screens/Cadastro';
 import Login from '../Screens/Login';   
 import Start from '../Screens/Start';  
+import ConfigIP from '../Screens/ConfigIP';
 
 const Stack = createNativeStackNavigator();
 
@@ -69,6 +70,7 @@ export default function Routes() {
         ) : (
           <>
             <Stack.Screen name="Start" component={Start} />
+            <Stack.Screen name="ConfigIP" component={ConfigIP} />
             <Stack.Screen name="Login">
               {props => <Login {...props} setUsuario={setUsuario} />}
             </Stack.Screen>
