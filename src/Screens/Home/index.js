@@ -1,26 +1,44 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, Button, Pressable, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, Pressable, Image, ScrollView, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../../Routes/AuthContext';
 
 export default function Home() {
-    const navigation = useNavigation();
-    const [dropdownAberto, setDropdownAberto] = useState(false);
-    const { logout } = useContext(AuthContext); // aqui
+  const navigation = useNavigation();
+  const [dropdownAberto, setDropdownAberto] = useState(false);
+  const [usuario, setUsuario] = useState(null);
+  const { logout } = useContext(AuthContext);
+
+  useEffect(() => {
+    const carregarUsuario = async () => {
+      try {
+        const dados = await AsyncStorage.getItem('usuario');
+        if (dados) {
+          setUsuario(JSON.parse(dados));
+        }
+      } catch (error) {
+        console.error('Erro ao carregar usuário:', error);
+      }
+    };
+
+    carregarUsuario();
+  }, []);
 
   return (
     <View style={styles.container}>
-         
-
-        <View style={styles.nav}>
+      <View style={styles.nav}>
         <Text style={styles.Titulo}> Cuide-se Bem! </Text>
         <Pressable onPress={() => setDropdownAberto(!dropdownAberto)}>
           <Image
             style={styles.perfil}
-            source={require('../../../assets/img/fotoPerfil.jpeg')}
+            source={
+              usuario?.foto
+                ? { uri: `http://127.0.0.1:8000/storage/${usuario.foto}` } // ou http://localhost:8000 para iOS/Expo
+                : require('../../../assets/img/fotoPerfil.jpeg')
+            }
           />
         </Pressable>
       </View>
@@ -31,7 +49,7 @@ export default function Home() {
             style={styles.dropdownItem}
             onPress={() => {
               setDropdownAberto(false);
-              navigation.navigate('EditarPerfil'); // Navega para a tela de alterar dados
+              navigation.navigate('EditarPerfil');
             }}
           >
             <Text>Editar Perfil</Text>
@@ -41,131 +59,97 @@ export default function Home() {
             style={styles.dropdownItem}
             onPress={() => {
               setDropdownAberto(false);
-              logout(); // logout correto aqui
+              logout();
             }}
           >
             <Text>Sair</Text>
           </TouchableOpacity>
-
         </View>
       )}
-        <ScrollView style={styles.scrollView}>
 
+      <ScrollView style={styles.scrollView}>
         <View style={styles.row}>
-
-            <View style={[styles.box, { backgroundColor: 'rgb(100, 213, 217)'}]}>
+          <View style={[styles.box, { backgroundColor: 'rgb(100, 213, 217)' }]}>
             <Pressable onPress={() => navigation.navigate('Agua')} style={styles.agua}>
-            <Image
-        style={styles.icone}
-        source={require('../../../assets/img/beberAgua.png')}/>
+              <Image style={styles.icone} source={require('../../../assets/img/beberAgua.png')} />
             </Pressable>
             <Text style={styles.iconeText}>Hidrate-se!</Text>
-            </View>
+          </View>
 
-            <View style={[styles.box, { backgroundColor: 'rgb(93, 93, 187)'}]}>
+          <View style={[styles.box, { backgroundColor: 'rgb(93, 93, 187)' }]}>
             <Pressable onPress={() => navigation.navigate('Dormir')} style={styles.dormir}>
-            <Image
-        style={styles.icone}
-        source={require('../../../assets/img/dormir.png')}/>
+              <Image style={styles.icone} source={require('../../../assets/img/dormir.png')} />
             </Pressable>
             <Text style={styles.iconeText}>Sono Relaxante</Text>
-            </View>
-            
+          </View>
         </View>
 
         <View style={styles.row}>
-
-            <View style={[styles.box, { backgroundColor: 'rgb(216, 81, 81)'}]}>
+          <View style={[styles.box, { backgroundColor: 'rgb(216, 81, 81)' }]}>
             <Pressable onPress={() => navigation.navigate('Frases')} style={styles.frase}>
-            <Image
-        style={styles.icone}
-        source={require('../../../assets/img/10.png')}/>
+              <Image style={styles.icone} source={require('../../../assets/img/10.png')} />
             </Pressable>
             <Text style={styles.iconeText}>Tenha Motivação</Text>
-            </View>
+          </View>
 
-            <View style={[styles.box, { backgroundColor: 'rgb(247, 190, 92)'}]}>
+          <View style={[styles.box, { backgroundColor: 'rgb(247, 190, 92)' }]}>
             <Pressable onPress={() => navigation.navigate('Vacinas')} style={styles.vacina}>
-            <Image
-        style={styles.icone}
-        source={require('../../../assets/img/vacina.png')}/>
+              <Image style={styles.icone} source={require('../../../assets/img/vacina.png')} />
             </Pressable>
             <Text style={styles.iconeText}>Vacina em Dia</Text>
-            </View>
-            
+          </View>
         </View>
 
         <View style={styles.row}>
-
-            <View style={[styles.box, { backgroundColor: 'rgb(237, 255, 77)'}]}>
+          <View style={[styles.box, { backgroundColor: 'rgb(237, 255, 77)' }]}>
             <Pressable onPress={() => navigation.navigate('Imc')} style={styles.imc}>
-            <Image
-        style={styles.icone}
-        source={require('../../../assets/img/imc.png')}/>
+              <Image style={styles.icone} source={require('../../../assets/img/imc.png')} />
             </Pressable>
             <Text style={styles.iconeText}>Cuide do Corpo!</Text>
-            </View>
+          </View>
 
-            <View style={[styles.box, { backgroundColor: 'rgb(172, 255, 77)'}]}>
+          <View style={[styles.box, { backgroundColor: 'rgb(172, 255, 77)' }]}>
             <Pressable onPress={() => navigation.navigate('Frutas')} style={styles.frutas}>
-            <Image
-        style={styles.icone}
-        source={require('../../../assets/img/fruta.png')}/>
+              <Image style={styles.icone} source={require('../../../assets/img/fruta.png')} />
             </Pressable>
             <Text style={styles.iconeText}>A fruta Ideal</Text>
-            </View>
-            
+          </View>
         </View>
 
         <View style={styles.row}>
-
-            <View style={[styles.box, { backgroundColor: 'rgb(163, 75, 171)'}]}>
+          <View style={[styles.box, { backgroundColor: 'rgb(163, 75, 171)' }]}>
             <Pressable onPress={() => navigation.navigate('Diabetes')} style={styles.diabete}>
-            <Image
-        style={styles.icone}
-        source={require('../../../assets/img/diabete.png')}/>
+              <Image style={styles.icone} source={require('../../../assets/img/diabete.png')} />
             </Pressable>
             <Text style={styles.iconeText}>Controle a Diabetes</Text>
-            </View>
+          </View>
 
-            <View style={[styles.box, { backgroundColor: 'rgb(75, 171, 149)'}]}>
+          <View style={[styles.box, { backgroundColor: 'rgb(75, 171, 149)' }]}>
             <Pressable onPress={() => navigation.navigate('Pressao')} style={styles.pressao}>
-            <Image
-        style={styles.icone}
-        source={require('../../../assets/img/pressao.png')}/>
+              <Image style={styles.icone} source={require('../../../assets/img/pressao.png')} />
             </Pressable>
             <Text style={styles.iconeText}>Pressão Equilibrada</Text>
-            </View>
-            
+          </View>
         </View>
 
         <View style={styles.row}>
-
-            <View style={[styles.box, { backgroundColor: 'rgb(255, 220, 106)'}]}>
+          <View style={[styles.box, { backgroundColor: 'rgb(255, 220, 106)' }]}>
             <Pressable onPress={() => navigation.navigate('Remedio')} style={styles.remedio}>
-            <Image
-        style={styles.icone}
-        source={require('../../../assets/img/remedio.png')}/>
+              <Image style={styles.icone} source={require('../../../assets/img/remedio.png')} />
             </Pressable>
             <Text style={styles.iconeText}>Lembre dos Remedios</Text>
-            </View>
+          </View>
 
-            <View style={[styles.box, { backgroundColor: 'rgb(255, 120, 160)'}]}>
+          <View style={[styles.box, { backgroundColor: 'rgb(255, 120, 160)' }]}>
             <Pressable onPress={() => navigation.navigate('Meditacao')} style={styles.meditacao}>
-            <Image
-        style={styles.icone}
-        source={require('../../../assets/img/meditacao.png')}/>
+              <Image style={styles.icone} source={require('../../../assets/img/meditacao.png')} />
             </Pressable>
             <Text style={styles.iconeText}>Relaxe!</Text>
-            </View>
-            
+          </View>
         </View>
 
-
-      <StatusBar style="auto" />
+        <StatusBar style="auto" />
       </ScrollView>
     </View>
   );
 }
-
-
