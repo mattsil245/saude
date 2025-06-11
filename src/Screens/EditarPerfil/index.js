@@ -36,31 +36,47 @@ export default function EditarPerfil({ navigation }) {
     }
     }
 
-  useEffect(() => {
-    const carregarUsuario = async () => {
-      const usuarioStr = await AsyncStorage.getItem('usuario');
-      if (usuarioStr) {
-        const usuario = JSON.parse(usuarioStr);
-        setNome(usuario.nome || '');
-        setEmail(usuario.email || '');
-        setSenha(usuario.senha || '');
-        setDataNasc(usuario.dataNasc || '');
-        setGenero(usuario.genero || '');
-        setAltura(String(usuario.altura || ''));
-        setPeso(String(usuario.peso || ''));
-        setUsuarioId(usuario.id);
-        if (usuario.foto) {
-          setImage({
-            uri: usuario.foto,
-            name: 'foto.jpg',
-            type: 'image/jpeg',
-            base64: null, // será atualizado ao escolher nova imagem
-          });
+    useEffect(() => {
+      const carregarUsuario = async () => {
+        const usuarioStr = await AsyncStorage.getItem('usuario');
+        const ipSalvo = await AsyncStorage.getItem('ip');
+    
+        if (usuarioStr) {
+          const usuario = JSON.parse(usuarioStr);
+          setNome(usuario.nome || '');
+          setEmail(usuario.email || '');
+          setSenha(usuario.senha || '');
+          setDataNasc(usuario.dataNasc || '');
+          setGenero(usuario.genero || '');
+          setAltura(String(usuario.altura || ''));
+          setPeso(String(usuario.peso || ''));
+          setUsuarioId(usuario.id);
+    
+          if (usuario.foto) {
+            // Montar URI dinamicamente conforme plataforma
+            let imageUri = '';
+            if (Platform.OS === 'web') {
+              imageUri = `http://127.0.0.1:8000/storage/${usuario.foto}`;
+            } else {
+              if (ipSalvo) {
+                imageUri = `http://${ipSalvo}:8000/storage/${usuario.foto}`;
+              } else {
+                imageUri = ''; // ou alguma fallback
+              }
+            }
+            setImage({
+              uri: imageUri,
+              name: 'foto.jpg',
+              type: 'image/jpeg',
+              base64: null,
+            });
+          }
         }
-      }
-    };
-    carregarUsuario();
-  }, []);
+      };
+    
+      carregarUsuario();
+    }, []);
+    
 
   const normalizeUri = async (uri) => {
     if (Platform.OS === 'android' && uri.startsWith('content://')) {
@@ -112,7 +128,7 @@ const salvarDados = async () => {
 
   try {
     let url;
-    const ipSalvo = await AsyncStorage.getItem('ip');
+    const ipSalvo = await AsyncStorage.getItem('apiIP');
     if (Platform.OS === 'android') {
       if (!ipSalvo) {
         Alert.alert('Erro', 'IP do servidor não encontrado.');
@@ -217,7 +233,11 @@ if ((data.status === 'success' || data.success) && data.usuario) {
           <Text style={styles.textoBotao}>Escolher Foto</Text>
         </Pressable>
 
-        {image && <Image source={{ uri: image.uri }} style={styles.imagePreview} />}
+        {image && image.uri ? (
+  <Image source={{ uri: image.uri }} style={styles.imagePreview} />
+) : (
+  <Image source={require('../../../assets/img/fotoPerfil.jpeg')} style={styles.imagePreview} />
+)}
 
         <Pressable style={styles.botao} onPress={salvarDados} disabled={uploading}>
           <Text style={styles.textoBotao}>{uploading ? 'Salvando...' : 'Salvar Alterações'}</Text>
