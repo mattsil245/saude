@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const imcData = {
   crianca: {
@@ -78,6 +79,40 @@ export default function Imc() {
   const [BgColor, setBgColor] = useState('rgb(254, 255, 214)');
   const [color, setColor] = useState('');
 
+  useEffect(() => {
+  const carregarDadosUsuario = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('usuario');
+      console.log("Dados recuperados:", jsonValue);
+
+      if (jsonValue != null) {
+        const usuario = JSON.parse(jsonValue);
+        setPeso(String(usuario.peso));
+        setAltura(String(usuario.altura));
+        setGenero(usuario.genero === 'Masculino' ? 'h' : 'm');
+
+        // Calcular idade com base na data de nascimento
+        const nascimento = new Date(usuario.dataNasc);
+        const hoje = new Date();
+        let idadeCalculada = hoje.getFullYear() - nascimento.getFullYear();
+        const m = hoje.getMonth() - nascimento.getMonth();
+        if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+          idadeCalculada--;
+        }
+        setIdade(String(idadeCalculada));
+      }
+    } catch (e) {
+      console.error('Erro ao carregar dados do usuário:', e);
+    }
+  };
+
+  carregarDadosUsuario();
+}, []);
+
+useEffect(() => {
+  CalcularIMC();
+}, [peso, altura, genero, idade]);
+
 
   const getIdade = () => {
     if (idade <= 12) return "crianca"; 
@@ -95,41 +130,34 @@ export default function Imc() {
   }
 
   const CalcularIMC = () => {
-    if(genero && peso && idade && altura){
-      let faixa = getIdade(idade);
-      let g = genero === 'h' ? "homens" : "mulheres";
+  if(genero && peso && idade && altura){
+    let faixa = getIdade();
+    let g = genero === 'h' ? "homens" : "mulheres";
 
-      //console.log(imcData[faixa][g]);
+    let imc = parseFloat(peso.replace(',', '.')) / (parseFloat(altura.replace(',', '.')) ** 2);
+    const imcUsuario = imc.toFixed(2);
 
-      let imc = peso.replace(',','.')/(altura.replace(',','.') * altura.replace(',','.'));
-      const imcUsuario = imc.toFixed(2);
+    const dados = imcData[faixa][g];
+    setTabelaSelecionada(dados);
 
-      const dados = imcData[faixa][g];
-      setTabelaSelecionada(dados)
+    const categoriaEncontrada = dados.find(({ imc }) => {
+      const valores = imc.split(' – ').map(valor => parseFloat(valor.replace(/[<>]/g, '').trim()));
+      const min = valores[0];
+      const max = valores.length > 1 ? valores[1] : undefined;
 
-      const categoriaEncontrada = dados.find(({ imc }) => {
-        const valores = imc.split(' – ').map(valor => parseFloat(valor.replace(/[<>]/g, '').trim()));
-        const min = valores[0];
-        const max = valores.length > 1 ? valores[1] : undefined;
-      
-        if (imc.includes('<')) return imcUsuario < min;
-        if (imc.includes('>')) return imcUsuario > min;
-        return imcUsuario >= min && (max === undefined || imcUsuario <= max);
-      });
+      if (imc.includes('<')) return imcUsuario < min;
+      if (imc.includes('>')) return imcUsuario > min;
+      return imcUsuario >= min && (max === undefined || imcUsuario <= max);
+    });
 
-      setColor(getColorByLegenda(legenda))
-      setLegenda(categoriaEncontrada.categoria)
-      setId(categoriaEncontrada.id)
-      
-      console.log(legenda, resultado)
-      
-      console.log(categoriaEncontrada);
-      
-      setResultado(imcUsuario)
-
+    if (categoriaEncontrada) {
+      setLegenda(categoriaEncontrada.categoria);
+      setColor(getColorByLegenda(categoriaEncontrada.categoria));
+      setId(categoriaEncontrada.id);
+      setResultado(imcUsuario);
     }
-
   }
+}
 
   return (
     <View style={styles.container}>
@@ -144,49 +172,50 @@ export default function Imc() {
           <View style={styles.content}>
             <Text style={styles.legenda}> Seu Peso: </Text>
               <TextInput
-                style={styles.textInput}
-                placeholder="Peso (kg)"
-                keyboardType="numeric"
-                placeholderTextColor={'#4f5951'}
-                value={peso}
-                onChangeText={setPeso}
-                />
+  style={styles.textInput}
+  placeholder="Peso (kg)"
+  keyboardType="numeric"
+  placeholderTextColor={'#4f5951'}
+  value={peso}
+  editable={false}
+/>
             </View>
             <View style={styles.content}>
                 <Text style={styles.legenda}> Sua Altura: </Text>
                 <TextInput
-                  style={styles.textInput}
-                  placeholder="Altura (m)"
-                  keyboardType='numeric'
-                  placeholderTextColor={'#4f5951'}
-                  value={altura}
-                  onChangeText={setAltura}
-                />
+  style={styles.textInput}
+  placeholder="Altura (m)"
+  keyboardType='numeric'
+  placeholderTextColor={'#4f5951'}
+  value={altura}
+  editable={false}
+/>
               </View>
         </View>
         <View style={styles.inputs}>
           <View style={styles.content}>
             <Text style={styles.legenda}> Genero: </Text>
               <Picker
-                selectedValue={genero}
-                onValueChange={(itemValue) => setGenero(itemValue)}
-                style={styles.textInput}
-              >
-              <Picker.Item label="Escolha" disabled value="" />
-              <Picker.Item label="Homem" value="h" />
-              <Picker.Item label="Mulher" value="m" />
-            </Picker>
+  selectedValue={genero}
+  onValueChange={(itemValue) => setGenero(itemValue)}
+  style={styles.textInput}
+  enabled={false} // desabilita o Picker
+>
+  <Picker.Item label="Escolha" disabled value="" />
+  <Picker.Item label="Homem" value="h" />
+  <Picker.Item label="Mulher" value="m" />
+</Picker>
             </View>
             <View style={styles.content}>
                 <Text style={styles.legenda}> Idade: </Text>
                 <TextInput
-                  style={styles.textInput}
-                  placeholder="Ex.: 18"
-                  keyboardType='numeric'
-                  placeholderTextColor={'#4f5951'}
-                  value={idade}
-                  onChangeText={setIdade}
-                />
+  style={styles.textInput}
+  placeholder="Ex.: 18"
+  keyboardType='numeric'
+  placeholderTextColor={'#4f5951'}
+  value={idade}
+  editable={false}
+/>
               </View>
         </View>
 
@@ -234,11 +263,11 @@ export default function Imc() {
             />
           </View>
    
-          <Button
+{/*           <Button
             title="Calcular"
             color="#ffd500"
            onPress={CalcularIMC}
-        />
+        /> */}
         
       <StatusBar style="auto" />
     

@@ -4,6 +4,7 @@ import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
 import { Feather } from '@expo/vector-icons'; // Ícone de seta para voltar
 import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const audios = [
   { id: 'relax1', nome: 'Relaxamento 1', arquivo: require('../../../assets/som/relaxamento1.mp3') },
@@ -98,14 +99,24 @@ export default function AudioListPlayer() {
       {currentAudioId === item.id && (
         <View style={styles.controls}>
           <TouchableOpacity onPress={isPlaying ? pausarAudio : continuarAudio} style={styles.controlButton}>
-            <Text style={styles.controlText}>{isPlaying ? '⏸️' : '▶️'}</Text>
+<MaterialIcons
+  name={isPlaying ? 'pause' : 'play-arrow'}
+  size={24}
+  color="white" // ou 'rgb(250, 8, 209)' para rosa
+/>
           </TouchableOpacity>
           <TouchableOpacity onPress={pararAudio} style={styles.controlButton}>
-            <Text style={styles.controlText}>⏹️</Text>
+<MaterialIcons
+  name="stop"
+  size={24}
+  color="white" // ou 'rgb(250, 8, 209)' se quiser o ícone rosa
+/>
           </TouchableOpacity>
         </View>
       )}
-      <Button style={{backgroundColor: '#ff00d5' }}title="Tocar" onPress={() => tocarAudio(item)} />
+<TouchableOpacity onPress={() => tocarAudio(item)} style={styles.playButton}>
+  <Text style={styles.playButtonText}>Tocar</Text>
+</TouchableOpacity>
       {currentAudioId === item.id && (
         <View style={styles.sliderContainer}>
           <Slider
@@ -113,9 +124,9 @@ export default function AudioListPlayer() {
             minimumValue={0}
             maximumValue={duration}
             value={position}
-            minimumTrackTintColor="#1EB1FC"
+            minimumTrackTintColor="rgb(250, 8, 209)"
             maximumTrackTintColor="#ccc"
-            thumbTintColor="#1EB1FC"
+            thumbTintColor="rgb(250, 8, 209)"
             onSlidingComplete={async (val) => {
               if (sound) await sound.setPositionAsync(val);
             }}
@@ -188,7 +199,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#333',
+    color: 'rgb(250, 8, 209)',
   },
   controls: {
     flexDirection: 'row',
@@ -197,7 +208,7 @@ const styles = StyleSheet.create({
   },
   controlButton: {
     padding: 10,
-    backgroundColor: '#1EB1FC',
+    backgroundColor: 'rgb(250, 8, 209)',
     borderRadius: 8,
   },
   controlText: {
@@ -213,4 +224,21 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginTop: 4,
   },
+  playButton: {
+  marginTop: 8,
+  backgroundColor: '#fb38da', // mesma cor de fundo da tela
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 8,
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: '#fa08d1', // contorno rosa, opcional
+},
+
+playButtonText: {
+  color: 'white',
+  fontSize: 16,
+  fontWeight: 'bold',
+},
+
 });
