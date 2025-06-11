@@ -32,14 +32,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#d9fff0',
-    padding: 20
+    backgroundColor: 'rgb(169, 226, 203)',
+    padding: 20,
   },
   title: {
+    display:'flex',
+    textAlign:'center',
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 40,
-    color: '#333'
+    color: 'rgb(0, 53, 32)',
   },
   button: {
     width: '80%',

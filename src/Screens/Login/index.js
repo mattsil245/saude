@@ -84,14 +84,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 24,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: ' rgb(169, 226, 203)',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 32,
     textAlign: 'center',
-    color: '#333',
+    color: ' rgb(0, 53, 32)',
   },
   input: {
     height: 48,
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   button: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: ' rgb(50, 117, 129)',
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -115,8 +115,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   link: {
-    color: '#3b82f6',
+    color: ' rgb(50, 117, 129)',
     textAlign: 'center',
     fontSize: 14,
+    fontWeight:'bold',
   },
 });
