@@ -4,9 +4,11 @@ import styles from './styles';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function Frutas() {
+  const navigation = useNavigation();
   
   const [query, setQuery] = useState('');
   const [dados, setDados] =  useState([]);
@@ -41,8 +43,8 @@ export default function Frutas() {
 
   return (
     <View style={styles.container}>
-     <View style={styles.nav}>
-     <Pressable onPress={() => navigation.navigate('Home')} style={styles.home}>
+     <View style={styles.nav}>      
+     <Pressable onPress={() => navigation.goBack()} style={styles.home}>
       <Feather style={styles.seta} name='arrow-left-circle' color={'#000'} size={30}/>
      </Pressable>
                <Text style= {styles.Titulo}> Frutas </Text>
