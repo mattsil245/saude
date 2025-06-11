@@ -169,7 +169,7 @@ export default function Cadastro({ navigation, setUsuario }) {
             ) : (
               <Image
                 style={styles.perfil}
-                source={require('../../../assets/img/fotoPerfil.jpeg')}
+                source={require('../../../assets/img/perfil.jpg')}
               />
             )}
           </View>

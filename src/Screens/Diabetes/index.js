@@ -36,6 +36,14 @@ export default function Diabetes() {
         </Text>
       </View>
 
+      <View style={styles.card}>
+        Medida Registrada:
+        <Text style={styles.digito}>
+        Nivel de Glicose: 78mg/dL
+</Text>
+data: 11/06 18:09
+      </View>
+
       <Modal
         animationType="slide"
         transparent={true}

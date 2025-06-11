@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#d9fff0',
+    paddingTop: 10,
   },
 
   formContainer: {
@@ -14,12 +15,14 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
-  Titulo: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    color: '#333',
-  },
+Titulo: {
+  fontSize: 32,
+  fontWeight: '700',
+  color: 'rgb(46, 125, 108)',
+  marginBottom: 20,
+  marginTop: 10,
+  textAlign: 'center',
+},
   subTitulo: {
     fontSize: 20,
     color: '#333',
@@ -74,7 +77,7 @@ const styles = StyleSheet.create({
   },
 
   button:{
-    height: '40%',
+    fontWeight: '600',
   },
 
   buttonContainer: {
