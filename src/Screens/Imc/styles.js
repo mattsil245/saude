@@ -123,21 +123,5 @@ export default StyleSheet.create({
         textAlign: 'center',
         fontSize: 14,
       },
-      // Adicione ao seu arquivo styles.js
-gaugeContainer: {
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginVertical: 20,
-},
-gaugeValueContainer: {
-  marginTop: 10,
-  padding: 8,
-  backgroundColor: '#f0f0f0',
-  borderRadius: 10,
-},
-gaugeValueText: {
-  fontSize: 18,
-  fontWeight: 'bold',
-  color: '#333',
-},
+      
 });
