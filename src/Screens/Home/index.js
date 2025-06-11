@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, Button, Pressable, Image, ScrollView, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../../Routes/AuthContext';
 
 export default function Home() {
     const navigation = useNavigation();
     const [dropdownAberto, setDropdownAberto] = useState(false);
+    const { logout } = useContext(AuthContext); // aqui
 
   return (
     <View style={styles.container}>
@@ -36,16 +38,14 @@ export default function Home() {
           </TouchableOpacity>
 
           <TouchableOpacity
-  style={styles.dropdownItem}
-  onPress={async () => {
-    setDropdownAberto(false);
-    await AsyncStorage.clear();
-    alert('Saindo...');
-    navigation.replace('Home'); // Vai para a tela Login substituindo a atual
-  }}
->
-  <Text>Sair</Text>
-</TouchableOpacity>
+            style={styles.dropdownItem}
+            onPress={() => {
+              setDropdownAberto(false);
+              logout(); // logout correto aqui
+            }}
+          >
+            <Text>Sair</Text>
+          </TouchableOpacity>
 
         </View>
       )}

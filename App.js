@@ -1,6 +1,11 @@
-import Routes from "./src/Routes";
-import React from "./src/Routes";
+import React from 'react';
+import Routes from './src/Routes';
+import { AuthProvider } from './src/Routes/AuthContext';
 
-export default function App(){
-  return <Routes/>
+export default function App() {
+  return (
+    <AuthProvider>
+      <Routes />
+    </AuthProvider>
+  );
 }
