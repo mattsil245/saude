@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
-  Text, View, Pressable, Modal, Button, TextInput, FlatList, Alert
+  Text,
+  View,
+  Pressable,
+  Modal,
+  TextInput,
+  FlatList,
+  Alert
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Diabetes() {
+export default function Pressao() {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
-  const [inputMedida, setInputMedida] = useState('');
+  const [sistolica, setSistolica] = useState('');
+  const [diastolica, setDiastolica] = useState('');
   const [historico, setHistorico] = useState([]);
 
   useEffect(() => {
@@ -20,7 +27,7 @@ export default function Diabetes() {
 
   const carregarHistorico = async () => {
     try {
-      const dados = await AsyncStorage.getItem('medidasGlicose');
+      const dados = await AsyncStorage.getItem('medidasPressao');
       if (dados) {
         setHistorico(JSON.parse(dados));
       }
@@ -30,21 +37,28 @@ export default function Diabetes() {
   };
 
   const salvarMedida = async () => {
-    if (!inputMedida.trim()) {
-      Alert.alert('Digite uma medida válida');
+    if (!sistolica.trim() || !diastolica.trim()) {
+      Alert.alert('Digite valores válidos para pressão sistólica e diastólica');
+      return;
+    }
+
+    if (isNaN(sistolica) || isNaN(diastolica)) {
+      Alert.alert('Digite números válidos');
       return;
     }
 
     const novaMedida = {
-      valor: inputMedida,
+      sistolica,
+      diastolica,
       data: new Date().toLocaleString()
     };
 
     const novoHistorico = [novaMedida, ...historico];
     try {
-      await AsyncStorage.setItem('medidasGlicose', JSON.stringify(novoHistorico));
+      await AsyncStorage.setItem('medidasPressao', JSON.stringify(novoHistorico));
       setHistorico(novoHistorico);
-      setInputMedida('');
+      setSistolica('');
+      setDiastolica('');
       setModalVisible(false);
     } catch (err) {
       Alert.alert('Erro ao salvar');
@@ -57,14 +71,16 @@ export default function Diabetes() {
         <Pressable onPress={() => navigation.navigate('Home')} style={styles.home}>
           <Feather name='arrow-left-circle' size={28} color={'#000'} />
         </Pressable>
-        <Text style={styles.Titulo}>Pressão</Text>
+        <Text style={styles.Titulo}>Pressão Arterial</Text>
       </View>
 
       <Text style={styles.subTitulo}>Última medida registrada:</Text>
       <View style={styles.card}>
         {historico.length > 0 ? (
           <>
-            <Text style={styles.digito}>Glicose: {historico[0].valor} mg/dL</Text>
+            <Text style={styles.digito}>
+              {historico[0].sistolica} / {historico[0].diastolica} mmHg
+            </Text>
             <Text style={styles.cardData}>{historico[0].data}</Text>
           </>
         ) : (
@@ -78,7 +94,9 @@ export default function Diabetes() {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text style={styles.digito}>Glicose: {item.valor} mg/dL</Text>
+            <Text style={styles.digito}>
+              {item.sistolica} / {item.diastolica} mmHg
+            </Text>
             <Text style={styles.cardData}>{item.data}</Text>
           </View>
         )}
@@ -93,14 +111,24 @@ export default function Diabetes() {
       >
         <View style={styles.centerView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Digite sua última medida de glicose:</Text>
+            <Text style={styles.modalText}>Digite sua última medida de pressão arterial:</Text>
+
             <TextInput
               style={styles.input}
               keyboardType="numeric"
-              value={inputMedida}
-              onChangeText={setInputMedida}
-              placeholder="Ex: 120"
+              value={sistolica}
+              onChangeText={setSistolica}
+              placeholder="Pressão sistólica (ex: 120)"
             />
+
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={diastolica}
+              onChangeText={setDiastolica}
+              placeholder="Pressão diastólica (ex: 80)"
+            />
+
             <View style={styles.buttonRow}>
               <Pressable style={styles.button} onPress={salvarMedida}>
                 <Text style={{ color: '#fff' }}>Salvar</Text>
