@@ -42,13 +42,15 @@ export default StyleSheet.create({
         position: 'static',
         width: '100%',
         height: 40,
-        borderBottomWidth: 1,
+/*         borderBottomWidth: 1, */
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
         flexDirection: 'row',
         marginTop: 25,
     },
     Titulo: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 22,
         marginEnd: 3,
         color: 'rgb(30, 70, 40)',
     },

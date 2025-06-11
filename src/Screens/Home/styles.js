@@ -64,6 +64,29 @@ export default StyleSheet.create({
         height: 50,
         marginEnd: 20,
   },
+  dropdownMenu: {
+  position: 'absolute',
+  top: 60, // ajuste conforme sua nav
+  right: 10,
+  width: 150,
+  backgroundColor: 'white',
+  borderRadius: 5,
+  paddingVertical: 10,
+  elevation: 5,
+  shadowColor: '#000',
+  shadowOpacity: 0.3,
+  shadowRadius: 5,
+  shadowOffset: { width: 0, height: 2 },
+  zIndex: 10,
+},
+
+dropdownItem: {
+  paddingVertical: 10,
+  paddingHorizontal: 15,
+  borderBottomColor: '#ddd',
+  borderBottomWidth: 1,
+},
+
 
       
 })

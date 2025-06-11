@@ -20,6 +20,7 @@ import Cadastro from '../Screens/Cadastro';
 import Login from '../Screens/Login';   
 import Start from '../Screens/Start';  
 import ConfigIP from '../Screens/ConfigIP';
+import EditarPerfil from '../Screens/EditarPerfil';
 
 const Stack = createNativeStackNavigator();
 
@@ -66,6 +67,7 @@ export default function Routes() {
             <Stack.Screen name="Pressao" component={Pressao} />
             <Stack.Screen name="Remedio" component={Remedio} />
             <Stack.Screen name="Vacinas" component={Vacinas} />
+            <Stack.Screen name="EditarPerfil" component={EditarPerfil} />
           </>
         ) : (
           <>

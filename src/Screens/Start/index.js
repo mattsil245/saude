@@ -23,6 +23,14 @@ export default function Start() {
       >
         <Text style={styles.buttonText}>Cadastrar</Text>
       </Pressable>
+
+      <Pressable 
+        style={[styles.button, { backgroundColor: 'rgb(100, 100, 100)' }]} 
+        onPress={() => navigation.navigate('ConfigIP')}
+      >
+        <Text style={styles.buttonText}>⚙️ Configurar IP</Text>
+      </Pressable>
+
     </View>
   );
 }

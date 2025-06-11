@@ -82,27 +82,14 @@ export default function Cadastro({ navigation, setUsuario }) {
 
   const enviarDados = async () => {
     if (!image) {
-      Alert.alert('Atenção', 'Selecione uma imagem!');
+      alert('Selecione uma imagem!');
       return;
     }
 
     setUploading(true);
+    const url = 'http://127.0.0.1:8000/api/usuarios/';
 
     try {
-      let url;
-
-      if (Platform.OS === 'android') {
-        const ipSalvo = await AsyncStorage.getItem('ip');
-        if (!ipSalvo) {
-          Alert.alert('Erro', 'IP do servidor não encontrado no armazenamento.');
-          setUploading(false);
-          return;
-        }
-        url = `http://${ipSalvo}:8000/api/usuarios/`;
-      } else {
-        url = 'http://127.0.0.1:8000/api/usuarios/';
-      }
-
       let uriFinal = image.uri;
       if (Platform.OS !== 'web') {
         uriFinal = await normalizeUri(image.uri);
@@ -148,23 +135,24 @@ export default function Cadastro({ navigation, setUsuario }) {
 
       const data = await response.json();
 
-      if (data.status === 'success' && data.usuario) {
-        const { created_at, updated_at, ...usuarioLimpo } = data.usuario;
+     if (data.status === 'success' && data.usuario) {
+  const { created_at, updated_at, ...usuarioLimpo } = data.usuario;
 
-        await AsyncStorage.setItem('usuario', JSON.stringify(usuarioLimpo));
-        setUsuario(usuarioLimpo);
+  await AsyncStorage.setItem('usuario', JSON.stringify(usuarioLimpo));
 
-        Alert.alert(
-          'Sucesso',
-          'Cadastro realizado com sucesso!',
-          [{ text: 'OK', onPress: () => navigation.navigate('Home') }]
-        );
-      } else {
-        Alert.alert('Erro', 'Erro no cadastro, tente novamente.');
-      }
+  setUsuario(usuarioLimpo);
+
+  alert('Sucesso', 'Cadastro realizado com sucesso!', [
+    { text: 'OK', onPress: () => navigation.navigate('Home') }
+  ]);
+}
+ else {
+  alert('Erro', 'Erro no cadastro, tente novamente.');
+}
+
     } catch (error) {
       console.error('Erro no fetch:', error);
-      Alert.alert('Erro', 'Erro ao enviar os dados.');
+      alert('Erro ao enviar os dados.');
     } finally {
       setUploading(false);
     }

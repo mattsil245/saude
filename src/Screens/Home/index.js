@@ -1,24 +1,54 @@
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import {Text, View, Button, Pressable,Image, ScrollView } from 'react-native';
+import { Text, View, Button, Pressable, Image, ScrollView, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Home() {
     const navigation = useNavigation();
+    const [dropdownAberto, setDropdownAberto] = useState(false);
 
   return (
     <View style={styles.container}>
          
 
         <View style={styles.nav}>
-          <Text style= {styles.Titulo}> Cuide-se Bem! </Text>
-        <Pressable title='Cadastro'onPress={ () => navigation.navigate('Cadastro')}>
-           <Image
-                style={styles.perfil}
-                source={require('../../../assets/img/fotoPerfil.jpeg')}
-              />
-            </Pressable>
+        <Text style={styles.Titulo}> Cuide-se Bem! </Text>
+        <Pressable onPress={() => setDropdownAberto(!dropdownAberto)}>
+          <Image
+            style={styles.perfil}
+            source={require('../../../assets/img/fotoPerfil.jpeg')}
+          />
+        </Pressable>
+      </View>
+
+      {dropdownAberto && (
+        <View style={styles.dropdownMenu}>
+          <TouchableOpacity
+            style={styles.dropdownItem}
+            onPress={() => {
+              setDropdownAberto(false);
+              navigation.navigate('EditarPerfil'); // Navega para a tela de alterar dados
+            }}
+          >
+            <Text>Editar Perfil</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+  style={styles.dropdownItem}
+  onPress={async () => {
+    setDropdownAberto(false);
+    await AsyncStorage.clear();
+    alert('Saindo...');
+    navigation.replace('Home'); // Vai para a tela Login substituindo a atual
+  }}
+>
+  <Text>Sair</Text>
+</TouchableOpacity>
+
         </View>
+      )}
         <ScrollView style={styles.scrollView}>
 
         <View style={styles.row}>

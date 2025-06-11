@@ -52,6 +52,7 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 10,
+        color: 'rgb(253, 100, 11)'
       },
       vacinaItem: {
         marginBottom: 10,
@@ -71,18 +72,21 @@ export default StyleSheet.create({
         padding: 15,
         color: 'rgb(253, 100, 11)',
         backgroundColor: 'rgb(245, 196, 168)',
-        borderBottomWidth: 1.5,
-        borderBottomColor: 'black'
+/*         borderBottomWidth: 1.5,
+        borderBottomColor: 'black' */
       },
       home: {
         marginRight: 10
       },
       seta: {
-        marginLeft: 5
+        marginLeft: 5,
+        color: 'rgb(253, 100, 11)',
+        fontWeight: 'bold'
       },
       Titulo: {
-        fontSize: 20,
-        fontWeight: 'bold'
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: 'rgb(253, 100, 11)'
       },
       vacinaCard: {
         backgroundColor: 'rgb(255, 234, 196)',
